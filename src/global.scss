@@ -35,3 +35,34 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
+
+:root {
+    --ion-background-color: #ffffff;
+    --ion-text-color: #000000;
+}
+
+.dark-theme {
+    --ion-background-color: #121212;
+    --ion-text-color: #ffffff;
+    color: white !important;
+
+    ion-content, ion-item, ion-label, ion-button, ion-toolbar {
+        color: white !important;
+    }
+
+    ion-button {
+        --color: white;
+    }
+
+    ion-toggle {
+        --handle-background: white;
+    }
+
+    ion-card-title {
+        color: white !important;
+    }
+
+    ion-card-header {
+        color: white !important;
+    }
+}
