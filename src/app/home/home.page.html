@@ -1,20 +1,121 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-grid>
+      <ion-row class="header-row" responsive-sm>
+        <!-- Notifications Toggle -->
+        <ion-col size="12" size-md="4">
+          <ion-item lines="none">
+            <ion-label>Enable Notifications</ion-label>
+            <ion-toggle [(ngModel)]="notificationsEnabled" (ionChange)="toggleNotifications($event)"></ion-toggle>
+          </ion-item>
+        </ion-col>
+
+        <ion-col size="12" size-md="4" class="center-content">
+          <ion-item lines="none">
+            <ion-label>Enable Notifications</ion-label>
+            <ion-toggle expand="block" [(ngModel)]="isDarkMode" (ionChange)="toggleDarkMode($event)">Toggle Dark Mode</ion-toggle>
+          </ion-item>
+        </ion-col>
+
+        <ion-col size="12" size-md="4">
+          <ion-item lines="none">
+            <ion-label>Temperature Unit ({{ tempUnit }})</ion-label>
+            <ion-toggle [checked]="tempUnit === 'F'" (ionChange)="toggleTemperatureUnit()"></ion-toggle>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
+  <ion-item>
+    <ion-label position="floating">Enter a city</ion-label>
+    <ion-input [(ngModel)]="manualLocation"></ion-input>
+  </ion-item>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+  <ion-button expand="full" (click)="fetchWeather()">
+    <ion-icon slot="start" name="cloud-outline"></ion-icon>
+    Get Weather
+  </ion-button>
+
+  <ion-card *ngIf="weatherData">
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="location-outline"></ion-icon>
+        {{ manualLocation ? manualLocation : (location.lat.toFixed(4) + ', ' + location.lon.toFixed(4)) }}
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <ion-icon name="thermometer-outline"></ion-icon>
+            <p><strong>Temperature:</strong> {{ weatherData.temp | number: '1.0-1' }}°{{ tempUnit }}</p>
+          </ion-col>
+          <ion-col>
+            <ion-icon name="water-outline"></ion-icon>
+            <p><strong>Humidity:</strong> {{ weatherData.humidity }}%</p>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-icon name="speedometer-outline"></ion-icon>
+            <p><strong>Wind Speed:</strong> {{ weatherData.windSpeed }}km/h</p>
+          </ion-col>
+          <ion-col>
+            <ion-icon name="partly-sunny-outline"></ion-icon>
+            <p><strong>Weather Condition:</strong> {{ getWeatherCondition(weatherData.weatherCode) }}</p>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="hourlyData">
+    <ion-card-header>
+      <ion-card-title>Hourly Forecast</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let hour of hourlyData">
+          <ion-label>
+            <h2>{{ hour.time | date: 'shortTime' }}</h2>
+            <p><strong>Temperature:</strong> {{ hour.temp | number: '1.0-1' }}°{{ tempUnit }}</p>
+            <p><strong>Humidity:</strong> {{ hour.humidity }}%</p>
+            <p><strong>Wind Speed:</strong> {{ hour.windSpeed }} km/h</p>
+            <p><strong>Condition:</strong> {{ getWeatherCondition(hour.weatherCode) }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="forecastData">
+    <ion-card-header>
+      <ion-card-title>5-Day Forecast</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let day of forecastData">
+          <ion-label>
+            <h2>{{ day.date | date: 'EEEE, MMM d' }}</h2>
+            <p>
+              <ion-icon name="thermometer-outline"></ion-icon> {{ day.tempMin }}°{{ tempUnit }} - {{ day.tempMax }}°{{ tempUnit }}
+            </p>
+            <p>
+              <ion-icon name="water-outline"></ion-icon> Humidity: {{ day.humidity }}%
+            </p>
+            <p>
+              <ion-icon name="speedometer-outline"></ion-icon> Wind Speed: {{ day.windSpeed }} km/h
+            </p>
+            <p>
+              <ion-icon name="partly-sunny-outline"></ion-icon> Condition: {{ getWeatherCondition(day.weatherCode) }}
+            </p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
 </ion-content>
