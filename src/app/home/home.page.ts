@@ -8,6 +8,8 @@ import { Network } from '@capacitor/network';
 import { Preferences } from '@capacitor/preferences';
 import { ConfigService } from '../services/config.service';
 
+import { register } from 'swiper/element/bundle';
+register();
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -28,6 +30,19 @@ export class HomePage implements OnInit {
   tempUnit: string = 'C';
 
   isDarkMode = false;
+
+swiperOptions = {
+  slidesPerView: 'auto',
+  spaceBetween: 10,
+  freeMode: true,
+  grabCursor: true,
+  touchRatio: 1,
+  keyboard: true,
+  mousewheel: true,
+  scrollbar: {
+    draggable: true
+  }
+};
 
   async ngOnInit() {
     await this.loadSettings();
@@ -403,4 +418,31 @@ export class HomePage implements OnInit {
 
   }
 
+  // Add this to your existing component class
+getWeatherIcon(weatherCode: number): string {
+  // Map weather codes to Ionicons
+  if (weatherCode >= 200 && weatherCode < 300) {
+    return 'thunderstorm-outline'; // Thunderstorm
+  } else if (weatherCode >= 300 && weatherCode < 400) {
+    return 'rainy-outline'; // Drizzle
+  } else if (weatherCode >= 500 && weatherCode < 600) {
+    return 'rainy-outline'; // Rain
+  } else if (weatherCode >= 600 && weatherCode < 700) {
+    return 'snow-outline'; // Snow
+  } else if (weatherCode >= 700 && weatherCode < 800) {
+    return 'cloud-outline'; // Atmosphere
+  } else if (weatherCode === 800) {
+    return 'sunny-outline'; // Clear
+  } else if (weatherCode > 800) {
+    return 'partly-sunny-outline'; // Clouds
+  }
+  return 'partly-sunny-outline'; // Default
+}
+
+  // Add to your existing component class
+    getTemperatureBarWidth(minTemp: number, maxTemp: number) {
+    // You can implement logic to calculate the appropriate width based on 
+    // your app's temperature ranges and scale
+    return {'transform': `scaleX(${(maxTemp - minTemp) / 20})`};
+  }
 }

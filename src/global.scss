@@ -36,6 +36,8 @@
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
 
+@import 'swiper/css';
+
 :root {
     --ion-background-color: #ffffff;
     --ion-text-color: #000000;
@@ -65,4 +67,9 @@
     ion-card-header {
         color: white !important;
     }
+}
+
+.weather-background {
+  --background: linear-gradient(to bottom, #1f4687, #2d6cb5, #62a2d7);
+  color: white;
 }
